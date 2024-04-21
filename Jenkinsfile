@@ -5,19 +5,19 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Construction du projet...'
-                sh 'mvn clean package'
+                powershell 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
                 echo 'Exécution des tests...'
-                sh 'mvn test'
+                powershell 'mvn test'
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Déploiement de l\'application...'
-                sh 'mvn spring-boot:run'
+                powershell 'mvn spring-boot:run'
             }
         }
     }
