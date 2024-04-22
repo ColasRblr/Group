@@ -1,23 +1,43 @@
 pipeline {
     agent any
-  environment {
-        JENKINS_URL = 'http://localhost:8080'
-        GIT_CREDENTIALS = credentials('jenkins-credentials')
-        CSRF_TOKEN = httpRequest(
-            url: "${JENKINS_URL}/crumbIssuer/api/xml",
-            authentication: "${GIT_CREDENTIALS.username}:${GIT_CREDENTIALS.password}"
-        ).xml.crumb
-    }
+    environment {
+            JENKINS_URL = 'http://localhost:8080'
+            GIT_CREDENTIALS = credentials('jenkins-credentials')
+            CSRF_TOKEN = ""
+        }
     stages {
+          stage('Get CSRF Token') {
+            steps {
+                script {
+                    def response =  httpRequest(
+                        url: "${JENKINS_URL}/crumbIssuer/api/xml",
+                        authentication: "${GIT_CREDENTIALS.username}:${GIT_CREDENTIALS.password}"
+                    )
+                    CSRF_TOKEN = response.xml.crumb
+                }
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Construction du projet...'
+                   httpRequest(
+                    url: "${JENKINS_URL}/job/your_job/build",
+                    authentication: "${JENKINS_USER}:${JENKINS_API_TOKEN}",
+                    httpMode: 'POST',
+                    headers: [Jenkins-Crumb: CSRF_TOKEN]
+                )
                 powershell 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
-               // echo 'Exécution des tests...'
+                echo 'Exécution des tests...'
+                   httpRequest(
+                    url: "${JENKINS_URL}/job/your_job/build",
+                    authentication: "${JENKINS_USER}:${JENKINS_API_TOKEN}",
+                    httpMode: 'POST',
+                    headers: [Jenkins-Crumb: CSRF_TOKEN]
+                )
                 powershell 'mvn test'
             }
         }
