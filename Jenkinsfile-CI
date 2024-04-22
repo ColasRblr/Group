@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+  environment {
+        JENKINS_URL = 'http://localhost:8080'
+        GIT_CREDENTIALS = credentials('jenkins-credentials')
+        CSRF_TOKEN = httpRequest(
+            url: "${JENKINS_URL}/crumbIssuer/api/xml",
+            authentication: "${GIT_CREDENTIALS.username}:${GIT_CREDENTIALS.password}"
+        ).xml.crumb
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Construction du projet...'
+                powershell 'mvn clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Exécution des tests...'
+                powershell 'mvn test'
+            }
+        }
+    }
+}
