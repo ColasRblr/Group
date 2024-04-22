@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Exécution des tests...'
+                //echo 'Exécution des tests...'
                    httpRequest(
                     url: "${JENKINS_URL}/job/your_job/build",
                     authentication: "${JENKINS_USER}:${JENKINS_API_TOKEN}",
