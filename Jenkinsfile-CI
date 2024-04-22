@@ -1,42 +1,42 @@
 pipeline {
     agent any
     environment {
-            JENKINS_URL = 'http://localhost:8080'
-            GIT_CREDENTIALS = credentials('jenkins-credentials')
-            CSRF_TOKEN = ""
-        }
+        JENKINS_URL = 'http://localhost:8080'
+        GIT_CREDENTIALS_ID = 'jenkins-credentials'
+        CSRF_TOKEN = ""
+    }
     stages {
-          stage('Get CSRF Token') {
+        stage('Get CSRF Token') {
             steps {
                 script {
-                    def response =  httpRequest(
-                        url: "${JENKINS_URL}/crumbIssuer/api/xml",
-                        authentication: "${GIT_CREDENTIALS.username}:${GIT_CREDENTIALS.password}"
+                    def response = httpRequest(
+                        url: "${JENKINS_URL}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)",
+                        authentication: "${env.GIT_CREDENTIALS_ID}"
                     )
-                    CSRF_TOKEN = response.xml.crumb
+                    CSRF_TOKEN = response.trim()
                 }
             }
         }
         stage('Build') {
             steps {
                 echo 'Construction du projet...'
-                   httpRequest(
+                httpRequest(
                     url: "${JENKINS_URL}/job/your_job/build",
-                    authentication: "${JENKINS_USER}:${JENKINS_API_TOKEN}",
+                    authentication: "${env.GIT_CREDENTIALS_ID}",
                     httpMode: 'POST',
-                    headers: [Jenkins-Crumb: CSRF_TOKEN]
+                    headers: [('Jenkins-Crumb': "${CSRF_TOKEN}")]
                 )
                 powershell 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
-                //echo 'Exécution des tests...'
-                   httpRequest(
+                echo 'Exécution des tests...'
+                httpRequest(
                     url: "${JENKINS_URL}/job/your_job/build",
-                    authentication: "${JENKINS_USER}:${JENKINS_API_TOKEN}",
+                    authentication: "${env.GIT_CREDENTIALS_ID}",
                     httpMode: 'POST',
-                    headers: [Jenkins-Crumb: CSRF_TOKEN]
+                    headers: [('Jenkins-Crumb': "${CSRF_TOKEN}")]
                 )
                 powershell 'mvn test'
             }
