@@ -13,5 +13,12 @@ pipeline {
                 powershell 'mvn test'
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Analyse SonarQube:'
+                // Lancement de l'analyse SonarQube avec Maven
+                powershell 'mvn sonar:sonar'
+            }
+        }
     }
 }
