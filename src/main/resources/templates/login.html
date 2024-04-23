@@ -3,15 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
 </head>
 <body>
-    <h2>Login</h2>
-    <form action="/authenticate" method="post">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="Login">
-    </form>
+    <div class='login'>
+        <div></div>
+        <form th:action="@{/login}" method="post" th:object="${loginForm}">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><label htmlFor="email">Identifiant * : </label></td>
+                        <td><input
+                            type="email"
+                            id="email"
+                            required
+                            th:field="*{email}"
+                        /></td>
+                    </tr>
+                    <tr>
+                        <td><label htmlFor="password">Mot de passe * : </label></td>
+                        <td><input
+                            type="password"
+                            id="password"
+                            required
+                            th:field="*{password}"
+                        /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class='signup_submit'>
+                <input type="submit" id="login-submit" value="Se connecter" />
+            </div>
+        </form>
+    </div>
 </body>
 </html>
+
