@@ -4,7 +4,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'ColasRblr-Group'
         SONAR_SOURCES = 'src'
         SONAR_HOST_URL = 'https://sonarcloud.io'
-        SONAR_TOKEN_ID = 'sonarQubeToken'
+        SONAR_TOKEN = credentials('sonarQubeToken')
     }
     stages {
         stage('Build') {
