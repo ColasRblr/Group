@@ -1,9 +1,15 @@
 pipeline {
     agent any
+      environment {
+        SONAR_PROJECT_KEY = 'ColasRblr-Group'
+        SONAR_SOURCES = 'src'
+        SONAR_HOST_URL = 'https://sonarcloud.io'
+        SONAR_TOKEN_ID = 'sonarqube token'
+    }
     stages {
         stage('Build') {
             steps {
-                echo 'Construction du projet'
+                echo 'Construction du projet:'
                 powershell 'mvn clean package'
             }
         }
@@ -16,8 +22,11 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Analyse SonarQube:'
-                // Lancement de l'analyse SonarQube avec Maven
-                powershell 'mvn sonar:sonar'
+                  withCredentials([string(credentialsId: env.SONAR_TOKEN_ID, variable: 'SONAR_TOKEN')]) {
+                    withSonarQubeEnv('SonarQube Scanner') {
+                        powershell 'sonar-scanner -Dsonar.projectKey=$env.SONAR_PROJECT_KEY -Dsonar.sources=$env.SONAR_SOURCES -Dsonar.host.url=$env.SONAR_HOST_URL -Dsonar.login=$env.SONAR_TOKEN'
+                    }
+                }
             }
         }
     }
