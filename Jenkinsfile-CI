@@ -26,4 +26,17 @@ pipeline {
             }
         }
     }
+    post {
+    always {
+        junit 'my-reports/test-reports/*.xml'
+        archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
+        sonargraphPublisher condition: {
+            return sonargraphExists()
+        }
+    }
+}
+}
+boolean sonargraphExists() {
+    def sonargraphHome = tool 'Sonargraph'
+    return sonargraphHome != null
 }
