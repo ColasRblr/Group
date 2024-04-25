@@ -6,9 +6,6 @@ pipeline {
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_TOKEN_ID = 'sonarQubeToken'
     }
-    tools {
-    sonarQube 'SonarQube Scanner'
-    }
     stages {
         stage('Build') {
             steps {
@@ -24,11 +21,9 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                echo 'Analyse SonarQube'
-                  withCredentials([string(credentialsId: env.SONAR_TOKEN_ID, variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv('SonarQube Scanner') {
-                        powershell 'sonar-scanner -Dsonar.projectKey=$env.SONAR_PROJECT_KEY -Dsonar.sources=$env.SONAR_SOURCES -Dsonar.host.url=$env.SONAR_HOST_URL -Dsonar.login=$env.SONAR_TOKEN'
-                    }
+              echo 'Analyse SonarQube'
+                withCredentials([string(credentialsId: env.SONAR_TOKEN_ID, variable: 'SONAR_TOKEN')]) {
+                    powershell "sonar-scanner -Dsonar.projectBaseDir=. -Dsonar.login=$env.SONAR_TOKEN"
                 }
             }
         }
