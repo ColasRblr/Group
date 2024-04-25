@@ -20,4 +20,20 @@ pipeline {
             }
         }
     }
+ post {
+    always {
+        junit 'my-reports/test-reports/*.xml'
+        archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
+    }
+    success {
+        mail to: 'colas.rabiller@gmail.com',
+                subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
+                body: 'Build succeeded: ${env.BUILD_URL}'
+    }
+    failure {
+        mail to: 'colas.rabiller@gmail.com',
+                subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
+                body: 'Build failed: ${env.BUILD_URL}'
+    }
+ }
 }
