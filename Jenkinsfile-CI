@@ -9,19 +9,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Construction du projet:'
+                echo 'Construction du projet'
                 powershell 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
-                echo 'Exécution des tests:'
+                echo 'Exécution des tests'
                 powershell 'mvn test'
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                echo 'Analyse SonarQube:'
+                echo 'Analyse SonarQube'
                   withCredentials([string(credentialsId: env.SONAR_TOKEN_ID, variable: 'SONAR_TOKEN')]) {
                     withSonarQubeEnv('SonarQube Scanner') {
                         powershell 'sonar-scanner -Dsonar.projectKey=$env.SONAR_PROJECT_KEY -Dsonar.sources=$env.SONAR_SOURCES -Dsonar.host.url=$env.SONAR_HOST_URL -Dsonar.login=$env.SONAR_TOKEN'
