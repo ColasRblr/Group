@@ -23,7 +23,7 @@
     	<sonar.projectKey>ColasRblr-Group</sonar.projectKey>
 		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
 		<sonar.inclusions>src/main/**,src/test/**</sonar.inclusions>
-		<sonar.tests>src/test/java,src/test/resources</sonar.tests>
+		<sonar.tests>src/test/java</sonar.tests>
 	</properties>
 	<dependencies>
 		<dependency>
