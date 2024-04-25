@@ -40,41 +40,23 @@
           </nav>
         <h1>Bienvenue sur la page d'accueil</h1>
 
-        <h2>Définir le nombre de groupes et d'utilisateurs</h2>
-        <form id="admin_form" th:action="@{/create_users_and_groups}" method="post" th:object="${groupAndUserForm}" >
-            <div class="mb-3">
-              <label for="userNumber" class="form-label">Nombre d'utilisateurs</label>
-              <input 
-                type="number" 
-                class="form-control" 
-                id="userNumber" 
-                aria-describedby="numberUserHelp"
-                th:field="*{userNumber}"
-              >
-              <div id="numberUserHelp" class="form-text">Choisissez le nombre d'utilsateur qui utiliseront l'application</div>
-            </div>
-            <div class="mb-3">
-              <label for="groupNumber" class="form-label">Nombre de groupes</label>
-              <input 
-                type="number" 
-                class="form-control" 
-                id="groupNumber" 
-                aria-describedby="numberGroupHelp"
-                th:field="*{groupNumber}"
-              >
-              <div id="numberGroupHelp" class="form-text">Choisissez le nombre de groupe que vous souhaitez avoir sur l'application</div>
-            </div>
+        <h2>Liste des utilisateurs</h2>
+        <ul>
+            <li th:each="user : ${users}">
+                <span th:text="${user.firstname} + ' ' + ${user.lastname}"></span>
+            </li>
+        </ul>
 
-            <div id="info_form">
-                <div id="info_form_last">
-                
-                </div>
-                <div id="info_form_user">
-                
-                </div>
+        <h2>Liste des groupes</h2>
+        <div id="group-container">
+            <div th:each="group : ${groups}" class="group-item">
+                <div th:text="'Groupe n°' + ${group.id}" class="group-title"></div>
+                <div th:text="${group.isCreated ? 'Groupe créé' : 'Pas encore créé'}"></div>
+                <div th:text="'Nombre de places au total : ' + ${group.numberUsers}"></div>
+                <div th:text="'Nombre de places disponibles : '"></div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+        </div>
+    </div>
 </body>
 </html>
 

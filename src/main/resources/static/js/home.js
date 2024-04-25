@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
             divLast.innerHTML = `
             <div class="mb-3">
                 <label for="configuration-select" class="mb-1">Choisissez la configuration des groupes</label>
-                <select id="configuration-select" class="form-select" th:field="*{configuration}">
+                <select id="configuration-select" class="form-select" th:field="*{configuration}" name="configuration">
                     <option value="">--Choisissez une option--</option>
                     <option th:value="'last_min'">LAST_MIN</option>
                     <option th:value="'last_max'">LAST_MAX</option>
@@ -54,10 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
             divLast.innerHTML = `
             <div class="mb-3">
                 <label for="pet-select" class="mb-1">Choisissez la configuration des groupes</label>
-                <select id="pet-select" class="form-select">
+                <select id="configuration-select" class="form-select" th:field="*{configuration}" name="configuration">
                     <option value="">--Choisissez une option--</option>
-                    <option value="last_min">LAST_MIN</option>
-                    <option value="last_max">LAST_MAX</option>
+                    <option th:value="'last_min'">LAST_MIN</option>
+                    <option th:value="'last_max'">LAST_MAX</option>
                 </select>
             </div>
             `

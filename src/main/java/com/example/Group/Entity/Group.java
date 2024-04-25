@@ -3,7 +3,7 @@ package com.example.Group.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="group")
+@Table(name="group_entity")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,11 @@ public class Group {
         return id;
     }
 
-    public Integer getnumberUsers() {
+    public Integer getNumberUsers() {
         return numberUsers;
     }
 
-    public void setnumberUsers(Integer numberUsers) {
+    public void setNumberUsers(Integer numberUsers) {
         this.numberUsers = numberUsers;
     }
 
@@ -43,7 +43,7 @@ public class Group {
         return isCreated;
     }
 
-    public void setisCreated(boolean isCreated) {
+    public void setIsCreated(boolean isCreated) {
         this.isCreated = isCreated;
     }
 }
