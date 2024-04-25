@@ -21,9 +21,9 @@
 		<sonar.organization>colasrblr</sonar.organization>
    		<sonar.login>${env.SONAR_TOKEN}</sonar.login>
     	<sonar.projectKey>ColasRblr-Group</sonar.projectKey>
-    	<sonar.sources>src</sonar.sources>
+		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
 		<sonar.inclusions>src/main/**,src/test/**</sonar.inclusions>
-    	<sonar.exclusions>src/main/resources/**</sonar.exclusions>
+		<sonar.tests>src/test/java,src/test/resources</sonar.tests>
 	</properties>
 	<dependencies>
 		<dependency>
