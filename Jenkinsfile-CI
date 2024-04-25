@@ -6,6 +6,9 @@ pipeline {
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_TOKEN_ID = 'sonarQubeToken'
     }
+    tools {
+    sonarQube 'SonarQube Scanner Local'
+    }
     stages {
         stage('Build') {
             steps {
