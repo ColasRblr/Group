@@ -12,7 +12,7 @@ import com.example.Group.Entity.User;
 import com.example.Group.Entity.Group;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Controller
 public class HomeController {
@@ -49,11 +49,11 @@ public class HomeController {
         String configuration = form.getConfiguration();
         List<User> users = form.getUsers();
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         for (User user : users) {
-            String hashedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(hashedPassword);
+            // String hashedPassword = passwordEncoder.encode(user.getPassword());
+            // user.setPassword(hashedPassword);
             userRepository.save(user);
         }
 

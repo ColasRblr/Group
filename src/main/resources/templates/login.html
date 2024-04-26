@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class='login'>
-        <div></div>
+        <div th:if="${message}" class="error-message" th:text="${message}"></div>
         <form th:action="@{/login}" method="post" th:object="${loginForm}">
             <table>
                 <tbody>
