@@ -22,43 +22,46 @@ pipeline {
             steps {
                 echo 'Analyse SonarQube:'
                 powershell 'mvn sonar:sonar' 
+            }
         }
     }
     post {
         always {
             junit 'my-reports/test-reports/*.xml'
             archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
-             }
-    success {
-        mail to: 'colas.rabiller@gmail.com',
-            subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-            body: 'Build succeeded: ${env.BUILD_URL}',
-            from: 'jenkins@notification.com'
+        }
+        success {
+            mail to: 'colas.rabiller@gmail.com',
+                subject: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "Build succeeded: ${env.BUILD_URL}",
+                from: 'jenkins@notification.com'
+        }
+        failure {
+            mail to: 'colas.rabiller@gmail.com',
+                subject: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "Build failed: ${env.BUILD_URL}",
+                from: 'jenkins@notification.com'
+        }
     }
-    failure {
-        mail to: 'colas.rabiller@gmail.com',
-            subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-            body: 'Build failed: ${env.BUILD_URL}',
-            from: 'jenkins@notification.com'
-    }
-    }
-     // Publiez les rapports SonarQube
-        step([$class: 'HtmlPublisher',
-            allowMissing: false,
-            alwaysLinkToLastBuild: false,
-            keepAll: true,
-            reportDir: 'target/site/sonar',
-            reportFiles: 'index.html',
-            reportName: 'SonarQube Report'
-        ])
-        // Publication des rapports de tests HTML:
-        publishHTML(target: [
-            allowMissing: false,
-            alwaysLinkToLastBuild: false,
-            keepAll: true,
-            reportDir: 'target/surefire-reports', // Le répertoire où se trouvent les rapports HTML des tests
-            reportFiles: 'TEST-*.html', // Modèle de fichier pour correspondre aux fichiers de rapport
-            reportName: 'Test Reports' // Nom du rapport affiché dans Jenkins
-        ])
+    // Publiez les rapports SonarQube et les rapports de tests HTML:
+    post {
+        success {
+            step([$class: 'HtmlPublisher',
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'target/site/sonar',
+                reportFiles: 'index.html',
+                reportName: 'SonarQube Report'
+            ])
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'target/surefire-reports', // Le répertoire où se trouvent les rapports HTML des tests
+                reportFiles: 'TEST-*.html', // Modèle de fichier pour correspondre aux fichiers de rapport
+                reportName: 'Test Reports' // Nom du rapport affiché dans Jenkins
+            ])
+        }
     }
 }
