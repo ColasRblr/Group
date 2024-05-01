@@ -26,7 +26,7 @@ pipeline {
                 }
             }
         }
-        stage('Publish SonarQube Results') {
+        stage('Publish SonarQube Results:') {
             steps {
                 echo 'Publication des résultats SonarQube'
                 timeout(time: 1, unit: 'HOURS') {
