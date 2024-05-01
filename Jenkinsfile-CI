@@ -20,7 +20,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                echo 'Analyse SonarQube'
+                echo 'Analyse SonarQube:'
                   withSonarQubeEnv('SonarQube Scanner') {
                 powershell "mvn sonar:sonar"
                   }
