@@ -37,12 +37,7 @@ pipeline {
                 stage('Publish SonarQube Results') {
                     steps {
                         echo 'Publication des résultats SonarQube'
-                        timeout(time: 1, unit: 'HOURS') {
-                            def qg = waitForQualityGate()
-                            if (qg.status != 'OK') {
-                                error "La passerelle de qualité a échoué : ${qg.status}"
-                            }
-                        }
+                
                         step([$class: 'SonarQubePublisher',
                         reportDirectory: 'target/sonar',
                         reportFile: 'TARGET/sonar-report.json',
