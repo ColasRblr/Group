@@ -6,82 +6,59 @@ pipeline {
         SONAR_TOKEN = credentials('sonarQubeToken')
     }
     stages {
-      
-                stage('Build') {
-                    steps {
-                        echo 'Construction du projet:'
-                        powershell 'mvn clean package'
-                    }
-                }
-                stage('Test') {
-                    steps {
-                        echo 'Exécution des tests:'
-                        powershell 'mvn test'
-                    }
-                }
-                stage('SonarQube Analysis') {
-                    steps {
-                        echo 'Analyse SonarQube:'
-                        powershell "mvn sonar:sonar"
-                    }
-                }
-                stage('Publish SonarQube Results') {
-                    steps {
-                        echo 'Publication des résultats SonarQube'
-                          script {
-                             echo 'Publication des résultats SonarQube'
-
-                // Récupérez les données d'analyse depuis SonarCloud ou SonarQube
-                def sonarData = powershell(script: "curl -s 'https://sonarcloud.io/api/measures/component?component=${env.SONAR_PROJECT_KEY}&metricKeys=bugs,vulnerabilities,code_smells'", returnStdout: true).trim()
-
-                // Enregistrez les données dans un fichier HTML
-                writeFile file: 'sonar_report.html', text: sonarData
-          
-
-        }
-                    
-                    
-                    }
-                }
+        stage('Build') {
+            steps {
+                echo 'Construction du projet:'
+                powershell 'mvn clean package' 
             }
-        
-    
+        }
+        stage('Test') {
+            steps {
+                echo 'Exécution des tests:'
+                powershell 'mvn test' 
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Analyse SonarQube:'
+                powershell 'mvn sonar:sonar' 
+        }
+    }
     post {
         always {
             junit 'my-reports/test-reports/*.xml'
             archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
-
-            // Publiez les rapports SonarQube
-            step([$class: 'HtmlPublisher',
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: 'target/site/sonar',
-                    reportFiles: 'index.html',
-                    reportName: 'SonarQube Report'
-                ])
-
-            // Publiez les rapports de tests
-            step([$class: 'HtmlPublisher',
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: 'target/surefire-reports',
-                    reportFiles: 'TEST-*.html',
-                    reportName: 'Test Reports'
-                ])
-        }
-        success {
-            mail to: 'colas.rabiller@gmail.com',
-                    subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                    body: 'Build succeeded: ${env.BUILD_URL}',
-                    from: 'jenkins@notification.com'
-        }
-        failure {
-            mail to: 'colas.rabiller@gmail.com',
-                    subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                    body: 'Build failed: ${env.BUILD_URL}',
-                    from: 'jenkins@notification.com'
-        }
+             }
+    success {
+        mail to: 'colas.rabiller@gmail.com',
+            subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
+            body: 'Build succeeded: ${env.BUILD_URL}',
+            from: 'jenkins@notification.com'
+    }
+    failure {
+        mail to: 'colas.rabiller@gmail.com',
+            subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
+            body: 'Build failed: ${env.BUILD_URL}',
+            from: 'jenkins@notification.com'
+    }
+    }
+     // Publiez les rapports SonarQube
+        step([$class: 'HtmlPublisher',
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: true,
+            reportDir: 'target/site/sonar',
+            reportFiles: 'index.html',
+            reportName: 'SonarQube Report'
+        ])
+        // Publication des rapports de tests HTML
+        publishHTML(target: [
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: true,
+            reportDir: 'target/surefire-reports', // Le répertoire où se trouvent les rapports HTML des tests
+            reportFiles: 'TEST-*.html', // Modèle de fichier pour correspondre aux fichiers de rapport
+            reportName: 'Test Reports' // Nom du rapport affiché dans Jenkins
+        ])
     }
 }
