@@ -1,4 +1,5 @@
 package com.example.Group.Controller;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,9 @@ import com.example.Group.Controller.HomeController;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.Group.Service.CustomUser;
 
 @Controller
 public class LoginController {
@@ -29,21 +32,25 @@ public class LoginController {
     @GetMapping("/")
     public String showLoginPage(Model model) {
         model.addAttribute("loginForm", new LoginForm());
-        return "login"; 
+        return "login";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam("email") String email,
-                        @RequestParam("password") String password,
-                        Model model,
-                        RedirectAttributes redirectAttributes) {
+            @RequestParam("password") String password,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
-        String encodedPassword = passwordEncoder.encode(password);
-        System.out.println("Encoded Password: " + encodedPassword);
+        System.out.println("email : " + email);
         try {
-            UserDetails user = userDetailsService.loadUserByUsername(email);
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                model.addAttribute("userId", user.getUsername());
+            // UserDetails user = userDetailsService.loadUserByUsername(email);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+            if (passwordEncoder.matches(password, userDetails.getPassword())) {
+                CustomUser customUser = (CustomUser) userDetails;
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUser, null,
+                        customUser.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
                 return homeController.showHomePage(model);
             } else {
                 model.addAttribute("message", "Identifiants incorrects. Veuillez réessayer.");

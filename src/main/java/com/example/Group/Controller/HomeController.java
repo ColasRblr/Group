@@ -1,4 +1,5 @@
 package com.example.Group.Controller;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +11,10 @@ import com.example.Group.Repository.GroupRepository;
 import java.util.List;
 import com.example.Group.Entity.User;
 import com.example.Group.Entity.Group;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.Group.Service.CustomUser;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Controller
@@ -24,12 +27,17 @@ public class HomeController {
 
     @GetMapping("/accueil")
     public String showHomePage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUser customUser = (CustomUser) authentication.getPrincipal();
+
         boolean hasUsers = userRepository.count() > 0;
         boolean hasGroups = groupRepository.count() > 0;
-        
+
         model.addAttribute("hasUsers", hasUsers);
         model.addAttribute("hasGroups", hasGroups);
-        
+        model.addAttribute("userId", customUser.getId());
+        model.addAttribute("isAdmin", customUser.getIsAdmin());
+
         if (hasUsers && hasGroups) {
             List<User> users = userRepository.findAll();
             List<Group> groups = groupRepository.findAll();
@@ -59,15 +67,11 @@ public class HomeController {
 
         for (int i = 0; i < groupNumber; i++) {
             Group group = new Group();
-            group.setNumberUsers(configuration.equals("LAST_MIN") ? 
-                ((i != groupNumber - 1) ? ((userNumber + 1) / groupNumber) : (userNumber / groupNumber)) 
-                :  
-                (configuration.equals("LAST_MAX") ? 
-                    ((i != groupNumber - 1) ? (userNumber / groupNumber) : ((userNumber / groupNumber) + 1))
-                    :
-                    (userNumber / groupNumber)
-                )
-            );
+            group.setNumberUsers(configuration.equals("LAST_MIN")
+                    ? ((i != groupNumber - 1) ? ((userNumber + 1) / groupNumber) : (userNumber / groupNumber))
+                    : (configuration.equals("LAST_MAX")
+                            ? ((i != groupNumber - 1) ? (userNumber / groupNumber) : ((userNumber / groupNumber) + 1))
+                            : (userNumber / groupNumber)));
             group.setIsCreated(false);
             group.setinvitationLink(null);
             groupRepository.save(group);
