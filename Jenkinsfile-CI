@@ -6,14 +6,7 @@ pipeline {
         SONAR_TOKEN = credentials('sonarQubeToken')
     }
     stages {
-        stage('Build, Test and Analyze') {
-            when {
-                anyOf {
-                    branch 'feature/*'
-                    branch 'develop'
-                }
-            }
-            stages {
+      
                 stage('Build') {
                     steps {
                         echo 'Construction du projet:'
@@ -46,8 +39,8 @@ pipeline {
                     }
                 }
             }
-        }
-    }
+        
+    
     post {
         always {
             junit 'my-reports/test-reports/*.xml'
