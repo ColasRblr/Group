@@ -6,40 +6,50 @@ pipeline {
         SONAR_TOKEN = credentials('sonarQubeToken')
     }
     stages {
-        stage('Build') {
-            steps {
-                echo 'Construction du projet:'
-                powershell 'mvn clean package'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Exécution des tests:'
-                powershell 'mvn test'
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Analyse SonarQube'
-                withSonarQubeEnv('SonarQube Scanner') {
-                    powershell "mvn sonar:sonar"
+        stage('Build, Test and Analyze') {
+            when {
+                anyOf {
+                    branch 'feature/*'
+                    branch 'develop'
                 }
             }
-        }
-        stage('Publish SonarQube Results:') {
-            steps {
-                echo 'Publication des résultats SonarQube'
-                timeout(time: 1, unit: 'HOURS') {
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "La passerelle de qualité a échoué : ${qg.status}"
+            stages {
+                stage('Build') {
+                    steps {
+                        echo 'Construction du projet:'
+                        powershell 'mvn clean package'
                     }
                 }
-                step([$class: 'SonarQubePublisher',
-                reportDirectory: 'target/sonar',
-                reportFile: 'TARGET/sonar-report.json',
-                qualityGateStatus: '${qg.status}'
-            ])
+                stage('Test') {
+                    steps {
+                        echo 'Exécution des tests:'
+                        powershell 'mvn test'
+                    }
+                }
+                stage('SonarQube Analysis') {
+                    steps {
+                        echo 'Analyse SonarQube'
+                        withSonarQubeEnv('SonarQube Scanner') {
+                            powershell "mvn sonar:sonar"
+                        }
+                    }
+                }
+                stage('Publish SonarQube Results') {
+                    steps {
+                        echo 'Publication des résultats SonarQube'
+                        timeout(time: 1, unit: 'HOURS') {
+                            def qg = waitForQualityGate()
+                            if (qg.status != 'OK') {
+                                error "La passerelle de qualité a échoué : ${qg.status}"
+                            }
+                        }
+                        step([$class: 'SonarQubePublisher',
+                        reportDirectory: 'target/sonar',
+                        reportFile: 'TARGET/sonar-report.json',
+                        qualityGateStatus: '${qg.status}'
+                    ])
+                    }
+                }
             }
         }
     }
@@ -47,7 +57,7 @@ pipeline {
         always {
             junit 'my-reports/test-reports/*.xml'
             archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
-       
+
             // Publiez les rapports SonarQube
             step([$class: 'HtmlPublisher',
                     allowMissing: false,
@@ -71,12 +81,14 @@ pipeline {
         success {
             mail to: 'colas.rabiller@gmail.com',
                     subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                    body: 'Build succeeded: ${env.BUILD_URL}'
+                    body: 'Build succeeded: ${env.BUILD_URL}',
+                    from: 'jenkins@notification.com'
         }
         failure {
             mail to: 'colas.rabiller@gmail.com',
                     subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                    body: 'Build failed: ${env.BUILD_URL}'
+                    body: 'Build failed: ${env.BUILD_URL}',
+                    from: 'jenkins@notification.com'
         }
     }
 }
