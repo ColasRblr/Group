@@ -24,6 +24,7 @@
 		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
 		<sonar.inclusions>src/main/**,src/test/**</sonar.inclusions>
 		<sonar.tests>src/test/java</sonar.tests>
+		<sonar.reportPath>target/sonar</sonar.reportPath>
 	</properties>
 	<dependencies>
 		<dependency>

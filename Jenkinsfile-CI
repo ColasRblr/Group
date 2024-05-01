@@ -22,20 +22,25 @@ pipeline {
                 stage('SonarQube Analysis') {
                     steps {
                         echo 'Analyse SonarQube:'
-                        withSonarQubeEnv('SonarQube Scanner') {
-                            powershell "mvn sonar:sonar"
-                        }
+                        powershell "mvn sonar:sonar"
                     }
                 }
                 stage('Publish SonarQube Results') {
                     steps {
                         echo 'Publication des résultats SonarQube'
-                
-                        step([$class: 'SonarQubePublisher',
-                        reportDirectory: 'target/sonar',
-                        reportFile: 'TARGET/sonar-report.json',
-                        qualityGateStatus: '${qg.status}'
-                    ])
+                          script {
+                             echo 'Publication des résultats SonarQube'
+
+                // Récupérez les données d'analyse depuis SonarCloud ou SonarQube
+                def sonarData = powershell(script: "curl -s 'https://sonarcloud.io/api/measures/component?component=${env.SONAR_PROJECT_KEY}&metricKeys=bugs,vulnerabilities,code_smells'", returnStdout: true).trim()
+
+                // Enregistrez les données dans un fichier HTML
+                writeFile file: 'sonar_report.html', text: sonarData
+          
+
+        }
+                    
+                    
                     }
                 }
             }
