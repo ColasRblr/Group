@@ -1,6 +1,6 @@
 pipeline {
     agent any
-      environment {
+    environment {
         SONAR_PROJECT_KEY = 'ColasRblr-Group'
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_TOKEN = credentials('sonarQubeToken')
@@ -21,26 +21,62 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Analyse SonarQube'
-                  withSonarQubeEnv('SonarQube Scanner') {
-                powershell "mvn sonar:sonar"
-                  }
+                withSonarQubeEnv('SonarQube Scanner') {
+                    powershell "mvn sonar:sonar"
+                }
+            }
+        }
+        stage('Publish SonarQube Results') {
+            steps {
+                echo 'Publication des résultats SonarQube'
+                timeout(time: 1, unit: 'HOURS') {
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "La passerelle de qualité a échoué : ${qg.status}"
+                    }
+                }
+                step([$class: 'SonarQubePublisher',
+                reportDirectory: 'target/sonar',
+                reportFile: 'TARGET/sonar-report.json',
+                qualityGateStatus: '${qg.status}'
+            ])
             }
         }
     }
-  post {
-    always {
-        junit 'my-reports/test-reports/*.xml'
-        archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
+    post {
+        always {
+            junit 'my-reports/test-reports/*.xml'
+            archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
+       
+            // Publiez les rapports SonarQube
+            step([$class: 'HtmlPublisher',
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'target/site/sonar',
+                    reportFiles: 'index.html',
+                    reportName: 'SonarQube Report'
+                ])
+
+            // Publiez les rapports de tests
+            step([$class: 'HtmlPublisher',
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'target/surefire-reports',
+                    reportFiles: 'TEST-*.html',
+                    reportName: 'Test Reports'
+                ])
+        }
+        success {
+            mail to: 'colas.rabiller@gmail.com',
+                    subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
+                    body: 'Build succeeded: ${env.BUILD_URL}'
+        }
+        failure {
+            mail to: 'colas.rabiller@gmail.com',
+                    subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
+                    body: 'Build failed: ${env.BUILD_URL}'
+        }
     }
-    success {
-        mail to: 'colas.rabiller@gmail.com',
-                subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                body: 'Build succeeded: ${env.BUILD_URL}'
-    }
-    failure {
-        mail to: 'colas.rabiller@gmail.com',
-                subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                body: 'Build failed: ${env.BUILD_URL}'
-    }
- }
 }
