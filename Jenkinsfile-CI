@@ -4,6 +4,10 @@ pipeline {
         SONAR_PROJECT_KEY = 'ColasRblr-Group'
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_TOKEN = credentials('sonarQubeToken')
+        JOB_NAME = env.JOB_NAME
+        BUILD_NUMBER = env.BUILD_NUMBER
+        BUILD_URL = env.BUILD_URL
+    }
     }
     stages {
         stage('Build') {
@@ -21,9 +25,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Analyse SonarQube:'
-                  withSonarQubeEnv('SonarQube Scanner') {
                 powershell "mvn sonar:sonar"
-                  }
             }
         }
     }
@@ -34,13 +36,13 @@ pipeline {
     }
     success {
         mail to: 'colas.rabiller@gmail.com',
-                subject: 'Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                body: 'Build succeeded: ${env.BUILD_URL}'
+                subject: 'Build succeeded',
+                body: 'Build succeeded: you can go to this link for more informations : http://eft-holy-serval.ngrok-free.app'
     }
     failure {
         mail to: 'colas.rabiller@gmail.com',
-                subject: 'Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]',
-                body: 'Build failed: ${env.BUILD_URL}'
+                subject: 'Build failed',
+                body: 'Build failed: you can go to this link for more informations : http://eft-holy-serval.ngrok-free.app'
     }
  }
 }
