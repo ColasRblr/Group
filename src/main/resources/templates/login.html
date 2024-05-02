@@ -8,11 +8,11 @@
 <body>
     <div class='login'>
         <div th:if="${message}" class="error-message" th:text="${message}"></div>
-        <form th:action="@{/login}" method="post" th:object="${loginForm}">
+        <form th:action="@{/signin}" method="post" th:object="${loginForm}">
             <table>
                 <tbody>
                     <tr>
-                        <td><label htmlFor="email">Identifiant * : </label></td>
+                        <td><label th:for="email">Identifiant * : </label></td>
                         <td><input
                             type="email"
                             id="email"
@@ -21,7 +21,7 @@
                         /></td>
                     </tr>
                     <tr>
-                        <td><label htmlFor="password">Mot de passe * : </label></td>
+                        <td><label th:for="password">Mot de passe * : </label></td>
                         <td><input
                             type="password"
                             id="password"

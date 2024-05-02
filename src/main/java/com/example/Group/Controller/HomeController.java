@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.example.Group.Model.GroupAndUserForm;
 import com.example.Group.Repository.UserRepository;
 import com.example.Group.Repository.GroupRepository;
+
+import java.security.Principal;
 import java.util.List;
 import com.example.Group.Entity.User;
 import com.example.Group.Entity.Group;
@@ -17,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.example.Group.Service.CustomUser;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class HomeController {
 
@@ -25,11 +29,14 @@ public class HomeController {
     @Autowired
     private GroupRepository groupRepository;
 
-    @GetMapping("/accueil")
+    @GetMapping("/home")
     public String showHomePage(Model model) {
+        System.out.println("coucou");
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUser customUser = (CustomUser) authentication.getPrincipal();
 
+        System.out.println(customUser.getId());
         boolean hasUsers = userRepository.count() > 0;
         boolean hasGroups = groupRepository.count() > 0;
 
@@ -76,7 +83,7 @@ public class HomeController {
             group.setinvitationLink(null);
             groupRepository.save(group);
         }
-        return "redirect:/accueil";
+        return "redirect:/home";
     }
 
 }
