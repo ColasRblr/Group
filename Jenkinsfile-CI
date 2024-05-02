@@ -4,10 +4,12 @@ pipeline {
         SONAR_PROJECT_KEY = 'ColasRblr-Group'
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_TOKEN = credentials('sonarQubeToken')
-        JOB_NAME = env.JOB_NAME
-        BUILD_NUMBER = env.BUILD_NUMBER
-        BUILD_URL = env.BUILD_URL
     }
+    when {
+        anyOf {
+            branch 'develop'
+            branchPattern 'feature/*'
+        }
     }
     stages {
         stage('Build') {
@@ -45,3 +47,4 @@ pipeline {
                 body: 'Build failed: you can go to this link for more informations : http://eft-holy-serval.ngrok-free.app'
     }
  }
+}
