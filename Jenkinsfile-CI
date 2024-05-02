@@ -45,4 +45,3 @@ pipeline {
                 body: 'Build failed: you can go to this link for more informations : http://eft-holy-serval.ngrok-free.app'
     }
  }
-}
