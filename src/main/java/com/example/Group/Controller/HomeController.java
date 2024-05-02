@@ -43,6 +43,8 @@ public class HomeController {
         model.addAttribute("hasUsers", hasUsers);
         model.addAttribute("hasGroups", hasGroups);
         model.addAttribute("userId", customUser.getId());
+        model.addAttribute("firstname", customUser.getFirstname());
+        model.addAttribute("lastname", customUser.getLastname());
         model.addAttribute("isAdmin", customUser.getIsAdmin());
 
         if (hasUsers && hasGroups) {
