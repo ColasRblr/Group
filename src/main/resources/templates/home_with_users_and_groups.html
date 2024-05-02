@@ -38,7 +38,7 @@
               </div>
             </div>
           </nav>
-        <h1>Bienvenue sur la page d'accueil</h1>
+        <h1 th:text="'Bienvenue ' + ${firstname} + ' ' + ${lastname}"></h1>
 
         <h2>Liste des utilisateurs</h2>
         <ul>
