@@ -41,14 +41,18 @@ pipeline {
         archiveArtifacts artifacts: 'my-reports/test-reports/*.xml', allowEmptyArchive: true
     }
     success {
-        mail to: 'colas.rabiller@gmail.com',
-                subject: 'Build succeeded',
-                body: 'Build succeeded: you can go to this link for more informations : http://eft-holy-serval.ngrok-free.app/job/multibranch/'
+         mail to: 'colas.rabiller@gmail.com',
+                subject: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "Build succeeded: ${env.BUILD_URL}
+                 You can go to this link for more informations : http://eft-holy-serval.ngrok-free.app/job/multibranch",
+                from: 'jenkins@notification.com'     
     }
     failure {
-        mail to: 'colas.rabiller@gmail.com',
-                subject: 'Build failed',
-                body: 'Build failed: you can go to this link for more informations : http://eft-holy-serval.ngrok-free.app/job/multibranch'
+         mail to: 'colas.rabiller@gmail.com',
+                subject: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                body: "Build failed: ${env.BUILD_URL}
+                 You can go to this link for more informations : http://eft-holy-serval.ngrok-free.app/job/multibranch",
+                from: 'jenkins@notification.com'     
     }
  }
 }
