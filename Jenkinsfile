@@ -24,7 +24,7 @@ pipeline {
                 powershell 'mvn test'
             }
         }
-        stage('SonarQube Analysis') {
+        stage('SonarQube Analysis:') {
             steps {
                 echo 'Analyse SonarQube:'
                 powershell "mvn sonar:sonar"
