@@ -5,12 +5,6 @@ pipeline {
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_TOKEN = credentials('sonarQubeToken')
     }
-    when {
-        anyOf {
-            branch 'develop'
-            branchPattern 'feature/*'
-        }
-    }
     stages {
         stage('Build') {
             steps {
@@ -20,7 +14,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Exécution des tests'
+                echo 'Exécution des tests:'
                 powershell 'mvn test'
             }
         }
