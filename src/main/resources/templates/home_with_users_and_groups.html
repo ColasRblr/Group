@@ -47,13 +47,15 @@
             </li>
         </ul>
 
-        <h2>Liste des groupes</h2>
+        <h2>Liste des groupes pas encore créés</h2>
         <div id="group-container">
-            <div th:each="group : ${groups}" class="group-item">
+            <div th:each="group : ${groupsWithoutUsers}" class="group-item-notcreated">
                 <div th:text="'Groupe n°' + ${group.id}" class="group-title"></div>
                 <div th:text="${group.isCreated ? 'Groupe créé' : 'Pas encore créé'}"></div>
                 <div th:text="'Nombre de places au total : ' + ${group.numberUsers}"></div>
-                <div th:text="'Nombre de places disponibles : '"></div>
+                <div th:text="'Nombre de places disponibles : ' + ${group.numberUsers}"></div>
+                <div th:text="'Créer ce groupe'" class="create-group"></div>
+                <a th:href="@{'/groupe/' + ${group.id}}" class="block"></a>
             </div>
         </div>
     </div>

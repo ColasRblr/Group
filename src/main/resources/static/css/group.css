@@ -1,0 +1,14 @@
+h2 {
+    margin: 20px;
+}
+
+.create-btn {
+    text-align: center;
+    margin-top: 100px;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #75b6fe;
+}

@@ -1,9 +1,11 @@
 package com.example.Group.Entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="group_entity")
+@Table(name = "group_entity")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +19,9 @@ public class Group {
 
     @Column(name = "is_created")
     private boolean isCreated;
+
+    @OneToMany(mappedBy = "group")
+    private List<UserGroup> userGroups;
 
     // Getters et setters
     public Long getId() {

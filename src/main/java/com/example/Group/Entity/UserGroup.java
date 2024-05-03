@@ -3,7 +3,7 @@ package com.example.Group.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="user_group")
+@Table(name = "user_group")
 public class UserGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +14,9 @@ public class UserGroup {
 
     @Column(name = "id_group")
     private Long idGroup;
+
+    @ManyToOne
+    private Group group;
 
     // Getters et setters
     public Long getId() {

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Groupe</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link th:href="@{/css/group.css}" rel="stylesheet" href="/css/group.css"/>
+    <script th:src="@{/js/group.js}"></script>
+</head>
+<body>
+    <div class='groupe'>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">GroupApp</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="groups.html">Découvrir les groupes</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+          <h2 th:text="${group.isCreated ? 'Groupe ' + group.id + ' créé' : 'Groupe ' + group.id + ' pas encore créé'}"></h2>
+
+          <div th:if="${not group.isCreated}" class="create-btn">
+
+
+                <button th:text="'Créer le groupe' + ${group.id}" id="create-invitation-link" th:attr="data-id=${group.id}">
+                </button>
+
+        </div>
+
+</body>
+</html>
+
