@@ -38,14 +38,15 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login", "/signin", "/css/**", "/js/**", "/webjars/**").permitAll()
-                        .requestMatchers("/home", "/create_users_and_groups", "/groupe/**", "/createGroup/**", "/group")
+                        .requestMatchers("/home", "/create_users_and_groups", "/groupe/**", "/createGroup/**", "/group",
+                                "/invitation/**")
                         .authenticated())
                 // .anyRequest().authenticated()
                 // .requestMatchers(HttpMethod.GET, "/user").hasRole("USER")
                 // .requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
 
                 .formLogin((form) -> form
-                        .loginPage("/login")
+                        // .loginPage("/login")
                         // .usernameParameter("email")
                         .permitAll()
                 // .defaultSuccessUrl("/home", true)

@@ -98,7 +98,7 @@ public class HomeController {
                             ? ((i != groupNumber - 1) ? (userNumber / groupNumber) : ((userNumber / groupNumber) + 1))
                             : (userNumber / groupNumber)));
             group.setIsCreated(false);
-            group.setinvitationLink("");
+            group.setInvitationLink("");
             groupRepository.save(group);
         }
         return "redirect:/home";

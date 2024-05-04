@@ -36,11 +36,11 @@ public class Group {
         this.numberUsers = numberUsers;
     }
 
-    public String getinvitationLink() {
+    public String getInvitationLink() {
         return invitationLink;
     }
 
-    public void setinvitationLink(String invitationLink) {
+    public void setInvitationLink(String invitationLink) {
         this.invitationLink = invitationLink;
     }
 

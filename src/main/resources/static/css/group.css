@@ -1,8 +1,9 @@
-h2 {
+h2,
+h3 {
     margin: 20px;
 }
 
-.create-btn {
+.invitation-form {
     text-align: center;
     margin-top: 100px;
 }

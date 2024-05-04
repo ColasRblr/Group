@@ -26,18 +26,21 @@
                 </ul>
               </div>
             </div>
-          </nav>
+        </nav>
 
-          <h2 th:text="${group.isCreated ? 'Groupe ' + group.id + ' créé' : 'Groupe ' + group.id + ' pas encore créé'}"></h2>
+        <h2 th:text="${group.isCreated ? 'Groupe ' + group.id + ' créé' : 'Groupe ' + group.id + ' pas encore créé'}"></h2>
 
-          <div th:if="${not group.isCreated}" class="create-btn">
+        <form th:if="${group.invitationLink == ''}" th:action="@{'/createGroup/' + ${group.id}}" method="post" class="invitation-form">
+            <button type="submit" th:text="'Créer le groupe' + ${group.id}" id="create-invitation-link" th:attr="data-id=${group.id}">
+            </button>
+        </form>
 
-
-                <button th:text="'Créer le groupe' + ${group.id}" id="create-invitation-link" th:attr="data-id=${group.id}">
-                </button>
-
-        </div>
-
+        <form th:if="${group.invitationLink != ''}" th:action="@{'/' + ${group.invitationLink}}" method="post" class="invitation-form">
+            <button th:if="${not userInGroup}" th:text="'Cliquez sur le lien d\'invitation pour rejoindre le groupe'" class="create-group">
+            </button>
+        </form>
+        <h3 th:if="${userInGroup}" th:text="'Félicitation, vous êtes déjà ajouté au groupe'"></h3>
+    </div>
 </body>
 </html>
 

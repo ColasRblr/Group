@@ -48,6 +48,8 @@ public class LoginController {
         System.out.println("email : " + email);
         try {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            String hashedPassword = passwordEncoder.encode(email);
+            System.out.println("password : " + hashedPassword);
 
             if (passwordEncoder.matches(password, userDetails.getPassword())) {
                 CustomUser customUser = (CustomUser) userDetails;
