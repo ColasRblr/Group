@@ -1,9 +1,11 @@
 package com.example.Group.Entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="group_entity")
+@Table(name = "group_entity")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,9 @@ public class Group {
     @Column(name = "is_created")
     private boolean isCreated;
 
+    @OneToMany(mappedBy = "group")
+    private List<UserGroup> userGroups;
+
     // Getters et setters
     public Long getId() {
         return id;
@@ -31,11 +36,11 @@ public class Group {
         this.numberUsers = numberUsers;
     }
 
-    public String getinvitationLink() {
+    public String getInvitationLink() {
         return invitationLink;
     }
 
-    public void setinvitationLink(String invitationLink) {
+    public void setInvitationLink(String invitationLink) {
         this.invitationLink = invitationLink;
     }
 

@@ -8,18 +8,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.example.Group.Model.GroupAndUserForm;
 import com.example.Group.Repository.UserRepository;
 import com.example.Group.Repository.GroupRepository;
+import com.example.Group.Repository.UserGroupRepository;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import com.example.Group.Entity.User;
 import com.example.Group.Entity.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.example.Group.Service.CustomUser;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
@@ -27,11 +29,12 @@ public class HomeController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private UserGroupRepository userGroupRepository;
+    @Autowired
     private GroupRepository groupRepository;
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
-        System.out.println("coucou");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUser customUser = (CustomUser) authentication.getPrincipal();
@@ -50,8 +53,21 @@ public class HomeController {
         if (hasUsers && hasGroups) {
             List<User> users = userRepository.findAll();
             List<Group> groups = groupRepository.findAll();
+
+            List<Long> groupIdsWithUsers = userGroupRepository.findGroupIdsWithUsers();
+            List<Group> groupsWithUsers = new ArrayList<>();
+            List<Group> groupsWithoutUsers = new ArrayList<>();
+
+            for (Group group : groups) {
+                if (groupIdsWithUsers.contains(group.getId())) {
+                    groupsWithUsers.add(group);
+                } else {
+                    groupsWithoutUsers.add(group);
+                }
+            }
             model.addAttribute("users", users);
-            model.addAttribute("groups", groups);
+            model.addAttribute("groupsWithUsers", groupsWithUsers);
+            model.addAttribute("groupsWithoutUsers", groupsWithoutUsers);
             return "home_with_users_and_groups";
         } else {
             model.addAttribute("groupAndUserForm", new GroupAndUserForm());
@@ -66,11 +82,11 @@ public class HomeController {
         String configuration = form.getConfiguration();
         List<User> users = form.getUsers();
 
-        // BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         for (User user : users) {
-            // String hashedPassword = passwordEncoder.encode(user.getPassword());
-            // user.setPassword(hashedPassword);
+            String hashedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(hashedPassword);
             userRepository.save(user);
         }
 
@@ -82,7 +98,7 @@ public class HomeController {
                             ? ((i != groupNumber - 1) ? (userNumber / groupNumber) : ((userNumber / groupNumber) + 1))
                             : (userNumber / groupNumber)));
             group.setIsCreated(false);
-            group.setinvitationLink(null);
+            group.setInvitationLink("");
             groupRepository.save(group);
         }
         return "redirect:/home";

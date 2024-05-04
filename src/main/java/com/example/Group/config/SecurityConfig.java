@@ -37,25 +37,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/login", "/signin", "/css/**", "/js/**",
-                                "/webjars/**")
-                        .permitAll()
-                        .requestMatchers("/home", "/create_users_and_groups").authenticated()
-                // .requestMatchers("/home").authenticated()
+                        .requestMatchers("/login", "/signin", "/css/**", "/js/**", "/webjars/**").permitAll()
+                        .requestMatchers("/home", "/create_users_and_groups", "/groupe/**", "/createGroup/**", "/group",
+                                "/invitation/**")
+                        .authenticated())
                 // .anyRequest().authenticated()
                 // .requestMatchers(HttpMethod.GET, "/user").hasRole("USER")
                 // .requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
 
-                )
                 .formLogin((form) -> form
-                        .loginPage("/login")
-                        .usernameParameter("email")
+                        // .loginPage("/login")
+                        // .usernameParameter("email")
                         .permitAll()
                 // .defaultSuccessUrl("/home", true)
                 )
-                .sessionManagement((session) -> session
-                        .maximumSessions(1)
-                        .expiredUrl("/login?expired"))
+                // .sessionManagement((session) -> session
+                // .maximumSessions(1)
+                // .expiredUrl("/login?expired"))
 
                 .userDetailsService(userDetailsService)
                 .logout((logout) -> logout.permitAll());

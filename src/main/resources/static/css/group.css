@@ -1,0 +1,15 @@
+h2,
+h3 {
+    margin: 20px;
+}
+
+.invitation-form {
+    text-align: center;
+    margin-top: 100px;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #75b6fe;
+}
