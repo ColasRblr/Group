@@ -1,0 +1,26 @@
+@Test
+@WithMockUser(username="admin", roles={"ADMIN"})
+public void testCreateUsersAndGroups() throws Exception {
+    List<User> users = new ArrayList<>();
+    User user1 = new User();
+    user1.setEmail("user1@outlook.fr");
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    String hashedPassword = passwordEncoder.encode("password1");
+    user1.setPassword(hashedPassword);
+    users.add(user1);
+
+    when(userRepository.findAll()).thenReturn(new ArrayList<>());  
+
+    GroupAndUserForm form = new GroupAndUserForm();
+    form.setUsers(users);
+    form.setUserNumber(1);
+    form.setGroupNumber(1);
+    form.setConfiguration("LAST_MIN");
+    mockMvc.perform(post("/create_users_and_groups")
+        .flashAttr("groupAndUserForm", form))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/home"));
+
+    verify(userRepository).saveAll(any(List.class));  
+    verify(groupRepository).save(any(Group.class));   
+}
