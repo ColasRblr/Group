@@ -10,7 +10,6 @@ import com.example.Group.Repository.UserRepository;
 import com.example.Group.Repository.GroupRepository;
 import com.example.Group.Repository.UserGroupRepository;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import com.example.Group.Entity.User;
@@ -21,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.example.Group.Service.CustomUser;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Controller
 public class HomeController {
