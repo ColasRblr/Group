@@ -20,6 +20,7 @@ import com.example.Group.Service.CustomUser;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 @ExtendWith(MockitoExtension.class)
 public class GroupControllerTest {
@@ -67,4 +68,15 @@ public class GroupControllerTest {
 
         assertEquals("redirect:/error", view);
     }
+
+    // @Test
+    // @WithMockUser
+    // public void testShowGroupPage() throws Exception {
+    // Long groupId = groupRepository.findAll().get(0).getId();
+    // Group group = groupRepository.findById(groupId).orElse(null);
+    // when(groupRepository.findById(groupId)).thenReturn(Optional.of(group));
+    // when(userGroupRepository.existsByIdGroupAndIdUser(groupId,
+    // 1L)).thenReturn(false);
+    // }
+
 }
