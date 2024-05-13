@@ -3,8 +3,8 @@ package com.example.Group.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="user")
-public class User{
+@Table(name = "user")
+public class User {
 
     public User() {
     }
@@ -28,10 +28,13 @@ public class User{
     @Column(name = "password")
     private String password;
 
-
     // Getters et setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstname() {
