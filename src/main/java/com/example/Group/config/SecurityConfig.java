@@ -46,7 +46,7 @@ public class SecurityConfig {
                 // .requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
 
                 .formLogin((form) -> form
-                        // .loginPage("/login")
+                        .loginPage("/login")
                         // .usernameParameter("email")
                         .permitAll()
                 // .defaultSuccessUrl("/home", true)
