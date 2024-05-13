@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'main') {
-                        echo 'Déploiement de l\'application'
+                        echo 'Déploiement de l\'application:'
                         powershell 'mvn spring-boot:run'
                     }
                 }
